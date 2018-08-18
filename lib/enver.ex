@@ -3,16 +3,58 @@ defmodule Enver do
   Documentation for Enver.
   """
 
-  @doc """
-  Hello world.
+  #######
+  # API #
+  #######
 
-  ## Examples
+  def env(key, bof \\ bag_of_functions()) do
+    with {:ok, proto_val} <- fetch_proto_val(key, bof.get_sys_env),
+         {:ok, parse_opts} <- fetch_parse_opts(key, bof.fetch_app_env),
+         {:ok, parser} <- fetch_parser(parse_opts.type),
+         {:ok, _} = valid <- parser.(proto_val, parse_opts) do
+      valid
+    else
+      {:error, _} = invalid ->
+        invalid
+    end
+  end
 
-      iex> Enver.hello()
-      :world
+  ################
+  # Undocumented #
+  ################
 
-  """
-  def hello do
-    :world
+  def fetch_parse_opts(key, fetch_app_env) do
+    case fetch_app_env.(:enver, :env) do
+      {:ok, %{^key => %{type: _} = val}} ->
+        {:ok, val}
+
+      _ ->
+        {:error, {:parse_opts_invalid_for_key, key}}
+    end
+  end
+
+  def fetch_parser(:integer), do: {:ok, &Enver.IntegerParser.parse/2}
+
+  def fetch_parser(type), do: {:error, {:parser_missing_for_type, type}}
+
+  def fetch_proto_val(key, get_sys_env) do
+    case get_sys_env.() do
+      %{^key => val} ->
+        {:ok, val}
+
+      _ ->
+        {:error, {:proto_val_missing_for_key, key}}
+    end
+  end
+
+  ###########
+  # Private #
+  ###########
+
+  def bag_of_functions() do
+    %{
+      fetch_app_env: &Application.fetch_env/2,
+      get_sys_env: &System.get_env/0
+    }
   end
 end
