@@ -15,6 +15,7 @@ defmodule EnverTest do
         "BASE_2_INTEGER_VAR" => %{type: :integer, base: 2},
         "BASE_10_INTEGER_VAR" => %{type: :integer, base: 10},
         "BASE_16_INTEGER_VAR" => %{type: :integer, base: 16},
+        "BASE_UNDECLARED_INTEGER_VAR" => %{type: :integer},
         "UTF8_BINARY_VAR" => %{type: :binary}
       }
     }
@@ -25,6 +26,7 @@ defmodule EnverTest do
       "BASE_2_INTEGER_VAR" => "10100",
       "BASE_10_INTEGER_VAR" => "20",
       "BASE_16_INTEGER_VAR" => "14",
+      "BASE_UNDECLARED_INTEGER_VAR" => "20",
       "MISSING_PARSE_OPTS_VAR" => "THIS_VAL_NOT_USED",
       "UTF8_BINARY_VAR" => "ICH_BIN_EIN_BINARY"
     }
@@ -40,6 +42,10 @@ defmodule EnverTest do
 
   test "retrieving a base 16 integer" do
     assert Enver.env("BASE_16_INTEGER_VAR", bof()) == {:ok, 20}
+  end
+
+  test "retrieving a integer w/ undeclared base defaults to base 10" do
+    assert Enver.env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a UTF8 binary" do

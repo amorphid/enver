@@ -3,8 +3,12 @@ defmodule Enver.IntegerParserTest do
 
   @parse &Enver.IntegerParser.parse/2
 
-  test "parsing defaults to base 10" do
-    assert @parse.("99", %{type: :integer}) == {:ok, 99}
+  test "parsing returns error for invalid integer" do
+    opts = %{type: :integer, base: 10}
+    assert @parse.("no_digits", opts) == {:error, :invalid_integer}
+    assert @parse.("1trailing", opts) == {:error, :invalid_integer}
+    assert @parse.("1.23", opts) == {:error, :invalid_integer}
+    assert @parse.("", opts) == {:error, :invalid_integer}
   end
 
   test "parsing returns error for invalid base" do
