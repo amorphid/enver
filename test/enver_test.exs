@@ -16,6 +16,10 @@ defmodule EnverTest do
         "BASE_10_INTEGER_VAR" => %{type: :integer, base: 10},
         "BASE_16_INTEGER_VAR" => %{type: :integer, base: 16},
         "BASE_UNDECLARED_INTEGER_VAR" => %{type: :integer},
+        "BOOLEAN_FALSE_VAR" => %{type: :boolean},
+        "BOOLEAN_MIXED_CASE_VAR" => %{type: :boolean},
+        "BOOLEAN_TRUE_VAR" => %{type: :boolean},
+        "BOOLEAN_UPCASE_VAR" => %{type: :boolean},
         "FLOAT_VAR" => %{type: :float},
         "UTF8_BINARY_VAR" => %{type: :binary}
       }
@@ -28,6 +32,10 @@ defmodule EnverTest do
       "BASE_10_INTEGER_VAR" => "20",
       "BASE_16_INTEGER_VAR" => "14",
       "BASE_UNDECLARED_INTEGER_VAR" => "20",
+      "BOOLEAN_FALSE_VAR" => "false",
+      "BOOLEAN_MIXED_CASE_VAR" => "False",
+      "BOOLEAN_TRUE_VAR" => "true",
+      "BOOLEAN_UPCASE_VAR" => "TRUE",
       "FLOAT_VAR" => "20.0",
       "MISSING_PARSE_OPTS_VAR" => "THIS_VAL_NOT_USED",
       "UTF8_BINARY_VAR" => "ICH_BIN_EIN_BINARY"
@@ -44,6 +52,22 @@ defmodule EnverTest do
 
   test "retrieving a base 16 integer" do
     assert Enver.env("BASE_16_INTEGER_VAR", bof()) == {:ok, 20}
+  end
+
+  test "retrieving a false boolean" do
+    assert Enver.env("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
+  end
+
+  test "retrieving a mixed case boolean" do
+    assert Enver.env("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
+  end
+
+  test "retrieving a true boolean" do
+    assert Enver.env("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
+  end
+
+  test "retrieving a upcase boolean" do
+    assert Enver.env("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
   end
 
   test "retrieving a integer w/ undeclared base defaults to base 10" do
@@ -81,6 +105,10 @@ defmodule EnverTest do
 
   test "binary types are parsed w/ binary parser" do
     assert Enver.fetch_parser(:binary) == {:ok, &Enver.BinaryParser.parse/2}
+  end
+
+  test "boolean types are parsed w/ binary parser" do
+    assert Enver.fetch_parser(:boolean) == {:ok, &Enver.BooleanParser.parse/2}
   end
 
   test "float types are parsed w/ float parser" do

@@ -33,6 +33,8 @@ defmodule Enver do
     end
   end
 
+  def fetch_parser(:boolean), do: {:ok, &Enver.BooleanParser.parse/2}
+
   def fetch_parser(:binary), do: {:ok, &Enver.BinaryParser.parse/2}
 
   def fetch_parser(:float), do: {:ok, &Enver.FloatParser.parse/2}
