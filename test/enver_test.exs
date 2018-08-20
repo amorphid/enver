@@ -16,6 +16,7 @@ defmodule EnverTest do
         "BASE_10_INTEGER_VAR" => %{type: :integer, base: 10},
         "BASE_16_INTEGER_VAR" => %{type: :integer, base: 16},
         "BASE_UNDECLARED_INTEGER_VAR" => %{type: :integer},
+        "FLOAT_VAR" => %{type: :float},
         "UTF8_BINARY_VAR" => %{type: :binary}
       }
     }
@@ -27,6 +28,7 @@ defmodule EnverTest do
       "BASE_10_INTEGER_VAR" => "20",
       "BASE_16_INTEGER_VAR" => "14",
       "BASE_UNDECLARED_INTEGER_VAR" => "20",
+      "FLOAT_VAR" => "20.0",
       "MISSING_PARSE_OPTS_VAR" => "THIS_VAL_NOT_USED",
       "UTF8_BINARY_VAR" => "ICH_BIN_EIN_BINARY"
     }
@@ -46,6 +48,10 @@ defmodule EnverTest do
 
   test "retrieving a integer w/ undeclared base defaults to base 10" do
     assert Enver.env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
+  end
+
+  test "retrieving a float" do
+    assert Enver.env("FLOAT_VAR", bof()) == {:ok, 20.0}
   end
 
   test "retrieving a UTF8 binary" do
@@ -71,6 +77,14 @@ defmodule EnverTest do
     actual = Enver.env(key, bof())
     expected = {:error, {:parse_opts_invalid_for_key, key}}
     assert actual == expected
+  end
+
+  test "binary types are parsed w/ binary parser" do
+    assert Enver.fetch_parser(:binary) == {:ok, &Enver.BinaryParser.parse/2}
+  end
+
+  test "float types are parsed w/ float parser" do
+    assert Enver.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
   end
 
   test "integer types are parsed w/ integer parser" do
