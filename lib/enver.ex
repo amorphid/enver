@@ -37,6 +37,8 @@ defmodule Enver do
 
   def fetch_parser(:binary), do: {:ok, &Enver.BinaryParser.parse/2}
 
+  def fetch_parser(:charlist), do: {:ok, &Enver.CharlistParser.parse/2}
+
   def fetch_parser(:float), do: {:ok, &Enver.FloatParser.parse/2}
 
   def fetch_parser(:integer), do: {:ok, &Enver.IntegerParser.parse/2}

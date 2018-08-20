@@ -20,6 +20,7 @@ defmodule EnverTest do
         "BOOLEAN_MIXED_CASE_VAR" => %{type: :boolean},
         "BOOLEAN_TRUE_VAR" => %{type: :boolean},
         "BOOLEAN_UPCASE_VAR" => %{type: :boolean},
+        "CHARLIST_VAR" => %{type: :charlist},
         "FLOAT_VAR" => %{type: :float},
         "UTF8_BINARY_VAR" => %{type: :binary}
       }
@@ -36,6 +37,7 @@ defmodule EnverTest do
       "BOOLEAN_MIXED_CASE_VAR" => "False",
       "BOOLEAN_TRUE_VAR" => "true",
       "BOOLEAN_UPCASE_VAR" => "TRUE",
+      "CHARLIST_VAR" => "ICH_BIN_EIN_CHARLIST",
       "FLOAT_VAR" => "20.0",
       "MISSING_PARSE_OPTS_VAR" => "THIS_VAL_NOT_USED",
       "UTF8_BINARY_VAR" => "ICH_BIN_EIN_BINARY"
@@ -80,6 +82,10 @@ defmodule EnverTest do
 
   test "retrieving a UTF8 binary" do
     assert Enver.env("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
+  end
+
+  test "retrieving a charlist" do
+    assert Enver.env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end
 
   test "retrieving an missing environment variable" do
