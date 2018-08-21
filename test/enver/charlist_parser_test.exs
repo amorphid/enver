@@ -3,7 +3,7 @@ defmodule Enver.CharlistParserTest do
 
   @parse &Enver.CharlistParser.parse/2
 
-  test "parsing returns error for invalid binary" do
+  test "parsing returns error for invalid charlist" do
     opts = %{type: :charlist}
     assert @parse.("", opts) == {:error, :invalid_charlist}
   end
