@@ -3,8 +3,12 @@ defmodule Enver.BinaryParser do
   `Enver.BinaryParser` is trying really hard to add value :P
   """
 
+  #######
+  # API #
+  #######
+
   def parse("", _) do
-    {:error, :invalid_binary}
+    {:error, "invalid binary"}
   end
 
   def parse(val, _) do

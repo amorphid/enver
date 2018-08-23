@@ -3,6 +3,10 @@ defmodule Enver.BooleanParser do
   `Enver.BinaryParser` is trying really hard to add value :P
   """
 
+  #######
+  # API #
+  #######
+
   def parse(val, _) do
     case String.downcase(val) do
       "false" ->
@@ -12,7 +16,7 @@ defmodule Enver.BooleanParser do
         {:ok, true}
 
       _ ->
-        {:error, :invalid_boolean}
+        {:error, "invalid boolean"}
     end
   end
 end

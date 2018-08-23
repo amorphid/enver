@@ -1,4 +1,9 @@
 defmodule Enver.IntegerParser do
+
+  #######
+  # API #
+  #######
+
   def parse(val, opts \\ %{base: nil})
 
   def parse(val, %{base: base}) when base in 2..36 do
@@ -7,12 +12,12 @@ defmodule Enver.IntegerParser do
         {:ok, int}
 
       _ ->
-        {:error, :invalid_integer}
+        {:error, "invalid integer"}
     end
   end
 
   def parse(_, %{base: base}) do
-    {:error, {:invalid_base, base}}
+    {:error, "invalid base: #{inspect(base)}"}
   end
 
   def parse(val, %{} = opts) do

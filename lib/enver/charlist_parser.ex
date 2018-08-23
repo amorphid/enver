@@ -1,6 +1,11 @@
 defmodule Enver.CharlistParser do
+
+  #######
+  # API #
+  #######
+
   def parse("", _) do
-    {:error, :invalid_charlist}
+    {:error, "invalid charlist"}
   end
 
   def parse(val, _) do

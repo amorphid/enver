@@ -5,6 +5,6 @@ defmodule Enver.BinaryParserTest do
 
   test "parsing returns error for invalid binary" do
     opts = %{type: :binary}
-    assert @parse.("", opts) == {:error, :invalid_binary}
+    assert @parse.("", opts) == {:error, "invalid binary"}
   end
 end

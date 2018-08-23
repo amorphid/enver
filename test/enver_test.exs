@@ -150,24 +150,17 @@ defmodule EnverTest do
     assert Enver.env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end
 
-  test "retrieving an missing environment variable" do
-    missing_env_var = "MISSING_ENVIRONMENT_VAR"
-    actual = Enver.env(missing_env_var, bof())
-    expected = {:error, {:proto_val_missing_for_key, missing_env_var}}
-    assert actual == expected
-  end
-
   test "retrieving a missing environment variable" do
     key = "MISSING_ENVIRONMENT_VAR"
     actual = Enver.env(key, bof())
-    expected = {:error, {:proto_val_missing_for_key, key}}
+    expected = {:error, "No environment variable for key: #{inspect(key)}"}
     assert actual == expected
   end
 
   test "retrieving a environment variable w/ missing parse opts" do
     key = "MISSING_PARSE_OPTS_VAR"
     actual = Enver.env(key, bof())
-    expected = {:error, {:parse_opts_invalid_for_key, key}}
+    expected = {:error, "No parse options for key: #{inspect(key)}"}
     assert actual == expected
   end
 
@@ -189,5 +182,12 @@ defmodule EnverTest do
 
   test "integer types are parsed w/ integer parser" do
     assert Enver.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
+  end
+
+  test "no parser for unknown type returns error" do
+    type = :unknown_type
+    actual = Enver.fetch_parser(type)
+    expected = {:error, "No parser for type: #{inspect(type)}"}
+    assert actual == expected
   end
 end

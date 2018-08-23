@@ -29,7 +29,7 @@ defmodule Enver do
         {:ok, val}
 
       _ ->
-        {:error, {:parse_opts_invalid_for_key, key}}
+        {:error, "No parse options for key: #{inspect(key)}"}
     end
   end
 
@@ -45,7 +45,7 @@ defmodule Enver do
 
   def fetch_parser(:integer), do: {:ok, &Enver.IntegerParser.parse/2}
 
-  def fetch_parser(type), do: {:error, {:parser_missing_for_type, type}}
+  def fetch_parser(type), do: {:error, "No parser for type: #{inspect(type)}"}
 
   def fetch_proto_val(key, get_sys_env) do
     case get_sys_env.() do
@@ -53,7 +53,7 @@ defmodule Enver do
         {:ok, val}
 
       _ ->
-        {:error, {:proto_val_missing_for_key, key}}
+        {:error, "No environment variable for key: #{inspect(key)}"}
     end
   end
 

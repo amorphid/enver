@@ -5,6 +5,6 @@ defmodule Enver.CharlistParserTest do
 
   test "parsing returns error for invalid charlist" do
     opts = %{type: :charlist}
-    assert @parse.("", opts) == {:error, :invalid_charlist}
+    assert @parse.("", opts) == {:error, "invalid charlist"}
   end
 end

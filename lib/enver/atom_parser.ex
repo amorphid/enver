@@ -5,7 +5,7 @@ defmodule Enver.AtomParser do
   #######
 
   def parse("", _) do
-    {:error, :invalid_atom}
+    {:error, "invalid atom"}
   end
 
   def parse(val, %{allow_nonexistent_atoms: true}) do
@@ -18,14 +18,10 @@ defmodule Enver.AtomParser do
     error ->
       case error do
         %ArgumentError{message: "argument error"} when is_binary(val) ->
-          {:error, :nonexistent_atom}
+          {:error, "nonexistent atom"}
 
         _ ->
           raise error
       end
   end
-
-  #######
-  # API #
-  #######
 end

@@ -29,13 +29,13 @@ defmodule Enver.AtomParserTest do
 
   test "parsing returns error for invalid atom" do
     opts = %{type: :atom}
-    assert @parse.("", opts) == {:error, :invalid_atom}
+    assert @parse.("", opts) == {:error, "invalid atom"}
   end
 
   test "parsing returns error for nonexistent atom" do
     opts = %{type: :binary, allow_nonexistent_atoms: false}
     val = binary_for_nonexistent_atom()
-    assert @parse.(val, opts) == {:error, :nonexistent_atom}
+    assert @parse.(val, opts) == {:error, "nonexistent atom"}
   end
 
   test "parsing atempt for nonexistent atom raises error for non-binary val" do
