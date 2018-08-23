@@ -3,10 +3,23 @@ defmodule Enver do
   Documentation for Enver.
   """
 
+  @type bof :: map()
+  @type fetch_app_env :: (:error, :env -> {:ok, map()} | :error)
+  @type get_sys_env :: (-> map())
+  @type invalid :: {:error, String.t()}
+  @type key :: String.t()
+  @type parse_opts :: map()
+  @type parser :: (val(), map() -> valid() | invalid())
+  @type proto_val() :: String.t()
+  @type type :: atom()
+  @type val :: String.t()
+  @type valid :: {:ok, term()}
+
   #######
   # API #
   #######
 
+  @spec env(key(), map()) :: valid() | invalid()
   def env(key, bof \\ bag_of_functions()) do
     with {:ok, proto_val} <- fetch_proto_val(key, bof.get_sys_env),
          {:ok, parse_opts} <- fetch_parse_opts(key, bof.fetch_app_env),
@@ -23,6 +36,7 @@ defmodule Enver do
   # Undocumented #
   ################
 
+  @spec fetch_parse_opts(key(), fetch_app_env()) :: {:ok, parse_opts()} | invalid()
   def fetch_parse_opts(key, fetch_app_env) do
     case fetch_app_env.(:enver, :env) do
       {:ok, %{^key => %{type: _} = val}} ->
@@ -33,6 +47,7 @@ defmodule Enver do
     end
   end
 
+  @spec fetch_parser(type()) :: {:ok, parser()} | invalid()
   def fetch_parser(:atom), do: {:ok, &Enver.AtomParser.parse/2}
 
   def fetch_parser(:boolean), do: {:ok, &Enver.BooleanParser.parse/2}
@@ -47,6 +62,7 @@ defmodule Enver do
 
   def fetch_parser(type), do: {:error, "No parser for type: #{inspect(type)}"}
 
+  @spec fetch_proto_val(key(), get_sys_env()) :: {:ok, proto_val()} | invalid
   def fetch_proto_val(key, get_sys_env) do
     case get_sys_env.() do
       %{^key => val} ->
@@ -61,6 +77,7 @@ defmodule Enver do
   # Private #
   ###########
 
+  @type bag_of_functions() :: bof()
   def bag_of_functions() do
     %{
       fetch_app_env: &Application.fetch_env/2,

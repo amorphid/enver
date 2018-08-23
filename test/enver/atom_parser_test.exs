@@ -37,10 +37,4 @@ defmodule Enver.AtomParserTest do
     val = binary_for_nonexistent_atom()
     assert @parse.(val, opts) == {:error, "nonexistent atom"}
   end
-
-  test "parsing atempt for nonexistent atom raises error for non-binary val" do
-    opts = %{type: :binary, allow_nonexistent_atoms: false}
-    func = fn -> @parse.(:not_a_binary, opts) end
-    assert_raise ArgumentError, func
-  end
 end
