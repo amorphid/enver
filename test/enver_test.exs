@@ -64,6 +64,7 @@ defmodule EnverTest do
         case error do
           %ArgumentError{message: "argument error"} ->
             val
+
           _ ->
             raise "this should not happen"
         end
@@ -72,9 +73,11 @@ defmodule EnverTest do
 
   test "retrieving a existing_atom" do
     val_str = binary_for_nonexistent_atom()
-    val_atom = String.to_atom(val_str) # creates atom
+    # creates atom
+    val_atom = String.to_atom(val_str)
+
     bof = %{
-      fetch_app_env: fn (:enver, :fetch_env) ->
+      fetch_app_env: fn :enver, :fetch_env ->
         {
           :ok,
           %{"EXISTING_ATOM" => %{type: :atom, allow_nonexistent_atoms: false}}
@@ -84,6 +87,7 @@ defmodule EnverTest do
         %{"EXISTING_ATOM" => val_str}
       end
     }
+
     actual = @fetch_env.("EXISTING_ATOM", bof)
     expected = {:ok, val_atom}
     assert actual == expected
@@ -91,8 +95,9 @@ defmodule EnverTest do
 
   test "retrieving a nonexistent_atom" do
     val = binary_for_nonexistent_atom()
+
     bof = %{
-      fetch_app_env: fn (:enver, :fetch_env) ->
+      fetch_app_env: fn :enver, :fetch_env ->
         {
           :ok,
           %{"NONEXISTENT_ATOM" => %{type: :atom, allow_nonexistent_atoms: true}}
@@ -102,8 +107,11 @@ defmodule EnverTest do
         %{"NONEXISTENT_ATOM" => val}
       end
     }
-    actual = @fetch_env.("NONEXISTENT_ATOM", bof) # converts nonexistent val
-    expected = {:ok, String.to_existing_atom(val)} # val should now exist
+
+    # converts nonexistent val
+    actual = @fetch_env.("NONEXISTENT_ATOM", bof)
+    # val should now exist
+    expected = {:ok, String.to_existing_atom(val)}
     assert actual == expected
   end
 
@@ -194,10 +202,12 @@ defmodule EnverTest do
 
   test "Enver module exports fetch_env/2" do
     name_and_arity = {:fetch_env, 2}
+
     actual =
       Enver.module_info()
       |> Keyword.get(:exports)
-      |> Enum.filter(fn ({_, _} = kv) -> kv == name_and_arity end)
+      |> Enum.filter(fn {_, _} = kv -> kv == name_and_arity end)
+
     expected = [name_and_arity]
     assert actual == expected
   end

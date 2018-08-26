@@ -21,6 +21,7 @@ defmodule Enver.AtomParserTest do
         case error do
           %ArgumentError{message: "argument error"} ->
             val
+
           _ ->
             raise "this should not happen"
         end

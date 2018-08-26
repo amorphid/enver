@@ -5,7 +5,7 @@ defmodule Enver do
 
   @type bof :: map()
   @type fetch_app_env :: (:error, :env -> {:ok, map()} | :error)
-  @type get_sys_env :: (-> map())
+  @type get_sys_env :: (() -> map())
   @type invalid :: {:error, String.t()}
   @type key :: String.t()
   @type parse_opts :: map()
