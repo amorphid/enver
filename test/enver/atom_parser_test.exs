@@ -4,9 +4,10 @@ defmodule Enver.AtomParserTest do
   @parse &Enver.AtomParser.parse/2
 
   def binary_for_nonexistent_atom() do
+    # max atom length is 255
     val =
       1..255
-      |> Enum.map(fn _ -> Enum.random(1..127) end)
+      |> Enum.map(fn _ -> Enum.random(?a..?z) end)
       |> to_string()
 
     # notes:
@@ -28,14 +29,84 @@ defmodule Enver.AtomParserTest do
     end
   end
 
-  test "parsing returns error for invalid atom" do
-    opts = %{type: :atom}
-    assert @parse.("", opts) == {:error, "invalid atom"}
+  def opts(new_opts \\ %{}) do
+    Map.merge(%{type: :atom}, new_opts)
   end
 
-  test "parsing returns error for nonexistent atom" do
-    opts = %{type: :binary, allow_nonexistent_atoms: false}
-    val = binary_for_nonexistent_atom()
-    assert @parse.(val, opts) == {:error, "nonexistent atom"}
+  describe "&parse/2" do
+    test "an existing atom w/ allow_nonexistent opt as false" do
+      # create binary for nonexistent atom
+      val_str = binary_for_nonexistent_atom()
+      # creates atom by converting the value
+      val_atom = String.to_atom(val_str)
+      opts = opts(%{allow_nonexistent: false})
+      actual = @parse.(val_str, opts)
+      expected = {:ok, val_atom}
+      assert actual == expected
+    end
+
+    test "an existing atom w/o allow_nonexistent opt" do
+      # create binary for nonexistent atom
+      val_str = binary_for_nonexistent_atom()
+      # creates atom by converting the value
+      val_atom = String.to_atom(val_str)
+      opts = opts()
+      actual = @parse.(val_str, opts)
+      expected = {:ok, val_atom}
+      assert actual == expected
+    end
+
+    test "a nonexisent atom w/ allow_nonexistent opt as true" do
+      # create binary for nonexistent atom
+      val_str = binary_for_nonexistent_atom()
+      opts = opts(%{allow_nonexistent: true})
+      # val should not exist yet
+      :error =
+        try do
+          String.to_existing_atom(val_str)
+        rescue
+          _ -> :error
+        end
+
+      actual = @parse.(val_str, opts)
+      # val should now exist, having been created during parsing
+      val_atom = String.to_existing_atom(val_str)
+      expected = {:ok, val_atom}
+      assert actual == expected
+    end
+
+    test "a nonexisent atom w/ allow_nonexistent opt as false" do
+      # create binary for nonexistent atom
+      val_str = binary_for_nonexistent_atom()
+      opts = opts(%{allow_nonexistent: false})
+      # val should not exist yet
+      :error =
+        try do
+          String.to_existing_atom(val_str)
+        rescue
+          _ -> :error
+        end
+
+      actual = @parse.(val_str, opts)
+      expected = {:error, "nonexistent atom"}
+      assert actual == expected
+    end
+
+    test "a nonexisent atom w/o allow_nonexistent opt" do
+      # create binary for nonexistent atom
+      val_str = binary_for_nonexistent_atom()
+      opts = opts()
+      # val should not exist yet
+      :error =
+        try do
+          String.to_existing_atom(val_str)
+        rescue
+          _ -> :error
+        end
+
+      actual = @parse.(val_str, opts)
+      expected = {:error, "nonexistent atom"}
+      assert actual == expected
+    end
   end
 end
