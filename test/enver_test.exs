@@ -1,6 +1,7 @@
 defmodule EnverTest do
   use ExUnit.Case, async: true
 
+  @bag_of_functions &Enver.bag_of_functions/0
   @fetch_env &Enver.fetch_env/2
 
   def bof() do
@@ -210,5 +211,18 @@ defmodule EnverTest do
 
     expected = [name_and_arity]
     assert actual == expected
+  end
+
+  describe "&bag_of_functions/0" do
+    test "expected values" do
+      actual = @bag_of_functions.()
+
+      expected = %{
+        fetch_app_env: &Application.fetch_env/2,
+        get_sys_env: &System.get_env/0
+      }
+
+      assert actual == expected
+    end
   end
 end
