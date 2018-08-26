@@ -1,6 +1,8 @@
 defmodule EnverTest do
   use ExUnit.Case, async: true
 
+  @fetch_env &Enver.fetch_env/2
+
   def bof() do
     %{
       fetch_app_env: &fetch_app_env/2,
@@ -8,7 +10,7 @@ defmodule EnverTest do
     }
   end
 
-  def fetch_app_env(:enver, :env) do
+  def fetch_app_env(:enver, :fetch_env) do
     {
       :ok,
       %{
@@ -68,12 +70,11 @@ defmodule EnverTest do
     end
   end
 
-  @tag :potato
   test "retrieving a existing_atom" do
     val_str = binary_for_nonexistent_atom()
     val_atom = String.to_atom(val_str) # creates atom
     bof = %{
-      fetch_app_env: fn (:enver, :env) ->
+      fetch_app_env: fn (:enver, :fetch_env) ->
         {
           :ok,
           %{"EXISTING_ATOM" => %{type: :atom, allow_nonexistent_atoms: false}}
@@ -83,7 +84,7 @@ defmodule EnverTest do
         %{"EXISTING_ATOM" => val_str}
       end
     }
-    actual = Enver.env("EXISTING_ATOM", bof)
+    actual = @fetch_env.("EXISTING_ATOM", bof)
     expected = {:ok, val_atom}
     assert actual == expected
   end
@@ -91,7 +92,7 @@ defmodule EnverTest do
   test "retrieving a nonexistent_atom" do
     val = binary_for_nonexistent_atom()
     bof = %{
-      fetch_app_env: fn (:enver, :env) ->
+      fetch_app_env: fn (:enver, :fetch_env) ->
         {
           :ok,
           %{"NONEXISTENT_ATOM" => %{type: :atom, allow_nonexistent_atoms: true}}
@@ -101,65 +102,65 @@ defmodule EnverTest do
         %{"NONEXISTENT_ATOM" => val}
       end
     }
-    actual = Enver.env("NONEXISTENT_ATOM", bof) # converts nonexistent val
+    actual = @fetch_env.("NONEXISTENT_ATOM", bof) # converts nonexistent val
     expected = {:ok, String.to_existing_atom(val)} # val should now exist
     assert actual == expected
   end
 
   test "retrieving a base 2 integer" do
-    assert Enver.env("BASE_2_INTEGER_VAR", bof()) == {:ok, 20}
+    assert @fetch_env.("BASE_2_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a base 10 integer" do
-    assert Enver.env("BASE_10_INTEGER_VAR", bof()) == {:ok, 20}
+    assert @fetch_env.("BASE_10_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a base 16 integer" do
-    assert Enver.env("BASE_16_INTEGER_VAR", bof()) == {:ok, 20}
+    assert @fetch_env.("BASE_16_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a false boolean" do
-    assert Enver.env("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
+    assert @fetch_env.("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
   end
 
   test "retrieving a mixed case boolean" do
-    assert Enver.env("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
+    assert @fetch_env.("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
   end
 
   test "retrieving a true boolean" do
-    assert Enver.env("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
+    assert @fetch_env.("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
   end
 
   test "retrieving a upcase boolean" do
-    assert Enver.env("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
+    assert @fetch_env.("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
   end
 
   test "retrieving a integer w/ undeclared base defaults to base 10" do
-    assert Enver.env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
+    assert @fetch_env.("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a float" do
-    assert Enver.env("FLOAT_VAR", bof()) == {:ok, 20.0}
+    assert @fetch_env.("FLOAT_VAR", bof()) == {:ok, 20.0}
   end
 
   test "retrieving a UTF8 binary" do
-    assert Enver.env("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
+    assert @fetch_env.("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
   end
 
   test "retrieving a charlist" do
-    assert Enver.env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
+    assert @fetch_env.("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end
 
   test "retrieving a missing environment variable" do
     key = "MISSING_ENVIRONMENT_VAR"
-    actual = Enver.env(key, bof())
+    actual = @fetch_env.(key, bof())
     expected = {:error, "No environment variable for key: #{inspect(key)}"}
     assert actual == expected
   end
 
   test "retrieving a environment variable w/ missing parse opts" do
     key = "MISSING_PARSE_OPTS_VAR"
-    actual = Enver.env(key, bof())
+    actual = @fetch_env.(key, bof())
     expected = {:error, "No parse options for key: #{inspect(key)}"}
     assert actual == expected
   end
@@ -188,6 +189,16 @@ defmodule EnverTest do
     type = :unknown_type
     actual = Enver.fetch_parser(type)
     expected = {:error, "No parser for type: #{inspect(type)}"}
+    assert actual == expected
+  end
+
+  test "Enver module exports fetch_env/2" do
+    name_and_arity = {:fetch_env, 2}
+    actual =
+      Enver.module_info()
+      |> Keyword.get(:exports)
+      |> Enum.filter(fn ({_, _} = kv) -> kv == name_and_arity end)
+    expected = [name_and_arity]
     assert actual == expected
   end
 end

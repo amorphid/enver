@@ -19,8 +19,8 @@ defmodule Enver do
   # API #
   #######
 
-  @spec env(key(), map()) :: valid() | invalid()
-  def env(key, bof \\ bag_of_functions()) do
+  @spec fetch_env(key(), map()) :: valid() | invalid()
+  def fetch_env(key, bof \\ bag_of_functions()) do
     with {:ok, proto_val} <- fetch_proto_val(key, bof.get_sys_env),
          {:ok, parse_opts} <- fetch_parse_opts(key, bof.fetch_app_env),
          {:ok, parser} <- fetch_parser(parse_opts.type),
@@ -38,7 +38,7 @@ defmodule Enver do
 
   @spec fetch_parse_opts(key(), fetch_app_env()) :: {:ok, parse_opts()} | invalid()
   def fetch_parse_opts(key, fetch_app_env) do
-    case fetch_app_env.(:enver, :env) do
+    case fetch_app_env.(:enver, :fetch_env) do
       {:ok, %{^key => %{type: _} = val}} ->
         {:ok, val}
 
