@@ -47,18 +47,6 @@ defmodule EnverTest do
     }
   end
 
-  test "retrieving a base 2 integer" do
-    assert @fetch_env.("BASE_2_INTEGER_VAR", bof()) == {:ok, 20}
-  end
-
-  test "retrieving a base 10 integer" do
-    assert @fetch_env.("BASE_10_INTEGER_VAR", bof()) == {:ok, 20}
-  end
-
-  test "retrieving a base 16 integer" do
-    assert @fetch_env.("BASE_16_INTEGER_VAR", bof()) == {:ok, 20}
-  end
-
   test "retrieving a false boolean" do
     assert @fetch_env.("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
   end

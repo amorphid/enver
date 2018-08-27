@@ -14,6 +14,7 @@ defmodule Enver.IntegerParser do
     with :ok <- validate_base(opts),
          {:ok, int} = maybe_valid <- parse_integer(val, opts),
          :ok <- validate_greater_than(int, opts),
+         :ok <- validate_less_than(int, opts),
          valid <- maybe_valid do
       valid
     else
@@ -25,6 +26,22 @@ defmodule Enver.IntegerParser do
   ################
   # Undocumented #
   ################
+
+  @doc false
+  @spec parse_integer(val(), opts()) :: valid() | invalid()
+  def parse_integer(val, %{base: base}) do
+    case Integer.parse(val, base) do
+      {int, ""} ->
+        {:ok, int}
+
+      _ ->
+        {:error, "invalid integer"}
+    end
+  end
+
+  def parse_integer(val, %{} = opts) when is_binary(val) do
+    parse(val, Map.put(opts, :base, 10))
+  end
 
   @doc false
   @spec validate_base(opts()) :: :ok | invalid()
@@ -55,18 +72,20 @@ defmodule Enver.IntegerParser do
   end
 
   @doc false
-  @spec parse_integer(val(), opts()) :: valid() | invalid()
-  def parse_integer(val, %{base: base}) do
-    case Integer.parse(val, base) do
-      {int, ""} ->
-        {:ok, int}
-
-      _ ->
-        {:error, "invalid integer"}
+  @spec validate_less_than(integer(), opts()) :: :ok | invalid()
+  def validate_less_than(int, %{less_than: lt}) when is_integer(lt) do
+    if int < lt do
+      :ok
+    else
+      {:error, "integer not less than: #{inspect(lt)}"}
     end
   end
 
-  def parse_integer(val, %{} = opts) when is_binary(val) do
-    parse(val, Map.put(opts, :base, 10))
+  def validate_less_than(_, %{less_than: lt}) do
+    {:error, "invalid less_than: #{inspect(lt)}"}
+  end
+
+  def validate_less_than(int, %{} = opts) do
+    validate_less_than(int, Map.put(opts, :less_than, int + 1))
   end
 end

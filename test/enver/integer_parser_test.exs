@@ -3,7 +3,7 @@ defmodule Enver.IntegerParserTest do
 
   @subject Enver.IntegerParser
 
-  def opts(%{} = new_opts) do
+  def opts(%{} = new_opts \\ %{}) do
     Map.merge(%{type: :integer}, new_opts)
   end
 
@@ -25,6 +25,11 @@ defmodule Enver.IntegerParserTest do
     test "base 16" do
       opts = opts(%{base: 16})
       assert @subject.parse("14", opts) == {:ok, 20}
+    end
+
+    test "base defaults to 10" do
+      opts = opts()
+      assert @subject.parse("20", opts) == {:ok, 20}
     end
 
     test "integer is invalid string" do
@@ -71,6 +76,23 @@ defmodule Enver.IntegerParserTest do
 
     test "not provided" do
       assert @subject.validate_greater_than(1, %{}) == :ok
+    end
+  end
+
+  describe "&validate_less_than/2" do
+    test "less than" do
+      assert @subject.validate_less_than(0, %{less_than: 1}) == :ok
+    end
+
+    test "not less than" do
+      lt = 1
+      actual = @subject.validate_less_than(1, %{less_than: 1})
+      expected = {:error, "integer not less than: #{inspect(lt)}"}
+      assert actual == expected
+    end
+
+    test "not provided" do
+      assert @subject.validate_less_than(1, %{}) == :ok
     end
   end
 end
