@@ -1,7 +1,7 @@
 defmodule Enver.AtomParserTest do
   use ExUnit.Case, async: true
 
-  @parse &Enver.AtomParser.parse/2
+  @subject Enver.AtomParser
 
   def binary_for_nonexistent_atom() do
     # max atom length is 255
@@ -40,7 +40,7 @@ defmodule Enver.AtomParserTest do
       # creates atom by converting the value
       val_atom = String.to_atom(val_str)
       opts = opts(%{allow_nonexistent: false})
-      actual = @parse.(val_str, opts)
+      actual = @subject.parse(val_str, opts)
       expected = {:ok, val_atom}
       assert actual == expected
     end
@@ -51,7 +51,7 @@ defmodule Enver.AtomParserTest do
       # creates atom by converting the value
       val_atom = String.to_atom(val_str)
       opts = opts()
-      actual = @parse.(val_str, opts)
+      actual = @subject.parse(val_str, opts)
       expected = {:ok, val_atom}
       assert actual == expected
     end
@@ -68,7 +68,7 @@ defmodule Enver.AtomParserTest do
           _ -> :error
         end
 
-      actual = @parse.(val_str, opts)
+      actual = @subject.parse(val_str, opts)
       # val should now exist, having been created during parsing
       val_atom = String.to_existing_atom(val_str)
       expected = {:ok, val_atom}
@@ -87,7 +87,7 @@ defmodule Enver.AtomParserTest do
           _ -> :error
         end
 
-      actual = @parse.(val_str, opts)
+      actual = @subject.parse(val_str, opts)
       expected = {:error, "nonexistent atom"}
       assert actual == expected
     end
@@ -104,7 +104,7 @@ defmodule Enver.AtomParserTest do
           _ -> :error
         end
 
-      actual = @parse.(val_str, opts)
+      actual = @subject.parse(val_str, opts)
       expected = {:error, "nonexistent atom"}
       assert actual == expected
     end

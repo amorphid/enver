@@ -3,6 +3,13 @@ defmodule Enver do
   Documentation for Enver.
   """
 
+  alias Enver.AtomParser
+  alias Enver.BooleanParser
+  alias Enver.BinaryParser
+  alias Enver.CharlistParser
+  alias Enver.FloatParser
+  alias Enver.IntegerParser
+
   @type bof :: map()
   @type fetch_app_env :: (:error, :env -> {:ok, map()} | :error)
   @type get_sys_env :: (() -> map())
@@ -13,7 +20,13 @@ defmodule Enver do
   @type proto_val() :: String.t()
   @type type :: atom()
   @type val :: String.t()
-  @type valid :: {:ok, term()}
+  @type valid ::
+          AtomParser.valid()
+          | BooleanParser.valid()
+          | BinaryParser.valid()
+          | CharlistParser.valid()
+          | FloatParser.valid()
+          | IntegerParser.valid()
 
   #######
   # API #
@@ -59,22 +72,22 @@ defmodule Enver do
 
   @doc false
   @spec fetch_parser(type()) :: {:ok, parser()} | invalid()
-  def fetch_parser(:atom), do: {:ok, &Enver.AtomParser.parse/2}
+  def fetch_parser(:atom), do: {:ok, &AtomParser.parse/2}
 
-  def fetch_parser(:boolean), do: {:ok, &Enver.BooleanParser.parse/2}
+  def fetch_parser(:boolean), do: {:ok, &BooleanParser.parse/2}
 
-  def fetch_parser(:binary), do: {:ok, &Enver.BinaryParser.parse/2}
+  def fetch_parser(:binary), do: {:ok, &BinaryParser.parse/2}
 
-  def fetch_parser(:charlist), do: {:ok, &Enver.CharlistParser.parse/2}
+  def fetch_parser(:charlist), do: {:ok, &CharlistParser.parse/2}
 
-  def fetch_parser(:float), do: {:ok, &Enver.FloatParser.parse/2}
+  def fetch_parser(:float), do: {:ok, &FloatParser.parse/2}
 
-  def fetch_parser(:integer), do: {:ok, &Enver.IntegerParser.parse/2}
+  def fetch_parser(:integer), do: {:ok, &IntegerParser.parse/2}
 
   def fetch_parser(type), do: {:error, "No parser for type: #{inspect(type)}"}
 
   @doc false
-  @spec fetch_proto_val(key(), get_sys_env()) :: {:ok, proto_val()} | invalid
+  @spec fetch_proto_val(key(), get_sys_env()) :: {:ok, proto_val()} | invalid()
   def fetch_proto_val(key, get_sys_env) do
     case get_sys_env.() do
       %{^key => val} ->

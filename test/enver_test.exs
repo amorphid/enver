@@ -1,8 +1,7 @@
 defmodule EnverTest do
   use ExUnit.Case, async: true
 
-  @bag_of_functions &Enver.bag_of_functions/0
-  @fetch_env &Enver.fetch_env/2
+  @subject Enver
 
   def bof() do
     %{
@@ -48,74 +47,74 @@ defmodule EnverTest do
   end
 
   test "retrieving a false boolean" do
-    assert @fetch_env.("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
+    assert @subject.fetch_env("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
   end
 
   test "retrieving a mixed case boolean" do
-    assert @fetch_env.("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
+    assert @subject.fetch_env("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
   end
 
   test "retrieving a true boolean" do
-    assert @fetch_env.("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
+    assert @subject.fetch_env("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
   end
 
   test "retrieving a upcase boolean" do
-    assert @fetch_env.("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
+    assert @subject.fetch_env("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
   end
 
   test "retrieving a integer w/ undeclared base defaults to base 10" do
-    assert @fetch_env.("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
+    assert @subject.fetch_env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
   end
 
   test "retrieving a float" do
-    assert @fetch_env.("FLOAT_VAR", bof()) == {:ok, 20.0}
+    assert @subject.fetch_env("FLOAT_VAR", bof()) == {:ok, 20.0}
   end
 
   test "retrieving a UTF8 binary" do
-    assert @fetch_env.("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
+    assert @subject.fetch_env("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
   end
 
   test "retrieving a charlist" do
-    assert @fetch_env.("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
+    assert @subject.fetch_env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end
 
   test "retrieving a missing environment variable" do
     key = "MISSING_ENVIRONMENT_VAR"
-    actual = @fetch_env.(key, bof())
+    actual = @subject.fetch_env(key, bof())
     expected = {:error, "No environment variable for key: #{inspect(key)}"}
     assert actual == expected
   end
 
   test "retrieving a environment variable w/ missing parse opts" do
     key = "MISSING_PARSE_OPTS_VAR"
-    actual = @fetch_env.(key, bof())
+    actual = @subject.fetch_env(key, bof())
     expected = {:error, "No parse options for key: #{inspect(key)}"}
     assert actual == expected
   end
 
   test "atom types are parsed w/ atom parser" do
-    assert Enver.fetch_parser(:atom) == {:ok, &Enver.AtomParser.parse/2}
+    assert @subject.fetch_parser(:atom) == {:ok, &Enver.AtomParser.parse/2}
   end
 
   test "binary types are parsed w/ binary parser" do
-    assert Enver.fetch_parser(:binary) == {:ok, &Enver.BinaryParser.parse/2}
+    assert @subject.fetch_parser(:binary) == {:ok, &Enver.BinaryParser.parse/2}
   end
 
   test "boolean types are parsed w/ binary parser" do
-    assert Enver.fetch_parser(:boolean) == {:ok, &Enver.BooleanParser.parse/2}
+    assert @subject.fetch_parser(:boolean) == {:ok, &Enver.BooleanParser.parse/2}
   end
 
   test "float types are parsed w/ float parser" do
-    assert Enver.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
+    assert @subject.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
   end
 
   test "integer types are parsed w/ integer parser" do
-    assert Enver.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
+    assert @subject.fetch_parser(:integer) == {:ok, &Enver.IntegerParser.parse/2}
   end
 
   test "no parser for unknown type returns error" do
     type = :unknown_type
-    actual = Enver.fetch_parser(type)
+    actual = @subject.fetch_parser(type)
     expected = {:error, "No parser for type: #{inspect(type)}"}
     assert actual == expected
   end
@@ -124,7 +123,7 @@ defmodule EnverTest do
     name_and_arity = {:fetch_env, 2}
 
     actual =
-      Enver.module_info()
+      @subject.module_info()
       |> Keyword.get(:exports)
       |> Enum.filter(fn {_, _} = kv -> kv == name_and_arity end)
 
@@ -134,7 +133,7 @@ defmodule EnverTest do
 
   describe "&bag_of_functions/0" do
     test "expected values" do
-      actual = @bag_of_functions.()
+      actual = @subject.bag_of_functions()
 
       expected = %{
         fetch_app_env: &Application.fetch_env/2,
