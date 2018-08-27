@@ -70,10 +70,6 @@ defmodule EnverTest do
     assert @subject.fetch_env("FLOAT_VAR", bof()) == {:ok, 20.0}
   end
 
-  test "retrieving a UTF8 binary" do
-    assert @subject.fetch_env("UTF8_BINARY_VAR", bof()) == {:ok, "ICH_BIN_EIN_BINARY"}
-  end
-
   test "retrieving a charlist" do
     assert @subject.fetch_env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end

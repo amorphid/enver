@@ -3,8 +3,14 @@ defmodule Enver.BinaryParserTest do
 
   @subject Enver.BinaryParser
 
-  test "parsing returns error for invalid binary" do
-    opts = %{type: :binary}
-    assert @subject.parse("", opts) == {:error, "invalid binary"}
+  def opts(%{} = new_opts \\ %{}) do
+    Map.merge(%{type: :binary}, new_opts)
+  end
+
+  describe "&parse/2" do
+    test "a binary" do
+      opts = opts()
+      assert @subject.parse("potato", opts) == {:ok, "potato"}
+    end
   end
 end
