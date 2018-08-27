@@ -9,7 +9,8 @@ defmodule Enver.IntegerParser do
   #######
 
   @spec parse(val(), opts()) :: valid() | invalid()
-  def parse(val, opts) when is_binary(val) and is_map(opts) do
+  def parse(val, %{type: :integer} = opts)
+      when is_binary(val) and is_map(opts) do
     with :ok <- validate_base(opts),
          {:ok, int} = maybe_valid <- parse_integer(val, opts),
          :ok <- validate_greater_than(int, opts),

@@ -3,25 +3,32 @@ defmodule Enver.IntegerParserTest do
 
   @subject Enver.IntegerParser
 
+  def opts(%{} = new_opts) do
+    Map.merge(%{type: :integer}, new_opts)
+  end
+
   #######
   # API #
   #######
 
   describe "&parse/2" do
     test "base 2 integer" do
-      assert @subject.parse("10100", %{base: 2}) == {:ok, 20}
+      opts = opts(%{base: 2})
+      assert @subject.parse("10100", opts) == {:ok, 20}
     end
 
     test "base 10" do
-      assert @subject.parse("20", %{base: 10}) == {:ok, 20}
+      opts = opts(%{base: 10})
+      assert @subject.parse("20", opts) == {:ok, 20}
     end
 
     test "base 16" do
-      assert @subject.parse("14", %{base: 16}) == {:ok, 20}
+      opts = opts(%{base: 16})
+      assert @subject.parse("14", opts) == {:ok, 20}
     end
 
     test "integer is invalid string" do
-      opts = %{type: :integer, base: 10}
+      opts = opts(%{base: 10})
       assert @subject.parse("no_digits", opts) == {:error, "invalid integer"}
       assert @subject.parse("1trailing", opts) == {:error, "invalid integer"}
       assert @subject.parse("1.23", opts) == {:error, "invalid integer"}
