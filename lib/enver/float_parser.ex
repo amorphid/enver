@@ -8,6 +8,12 @@ defmodule Enver.FloatParser do
   # API #
   #######
 
+  @doc """
+  Converts the given binary to an float.
+
+      iex(1)> Enver.FloatParser.parse("1.23", %{type: :float})
+      {:ok, 1.23}
+  """
   @spec parse(val(), opts()) :: valid() | invalid()
   def parse(val, %{type: :float}) when is_binary(val) do
     case Float.parse(val) do

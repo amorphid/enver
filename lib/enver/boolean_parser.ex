@@ -8,6 +8,12 @@ defmodule Enver.BooleanParser do
   # API #
   #######
 
+  @doc """
+  Converts the given binary to an boolean.
+
+      iex(1)> Enver.BooleanParser.parse("true", %{type: :boolean})
+      {:ok, true}
+  """
   @spec parse(val(), opts()) :: valid() | invalid()
   def parse(val, %{type: :boolean}) when is_binary(val) do
     case String.downcase(val) do

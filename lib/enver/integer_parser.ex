@@ -8,6 +8,21 @@ defmodule Enver.IntegerParser do
   # API #
   #######
 
+  @doc """
+  Converts the given binary to an integer.
+
+      iex(1)> Enver.IntegerParser.parse("123", %{type: :integer})
+      {:ok, 123}
+
+  ## Options:
+
+  - `:greater_than`
+    - Must be an integer
+    - An error will be returned if the parsed integer is not greater than the `:greater_than` integer.
+  - `:less_than`
+    - Must be an integer
+    - An error will be returned if the parsed integer is not greater than the `:less_than` integer
+  """
   @spec parse(val(), opts()) :: valid() | invalid()
   def parse(val, %{type: :integer} = opts)
       when is_binary(val) and is_map(opts) do
