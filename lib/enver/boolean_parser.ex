@@ -1,8 +1,4 @@
 defmodule Enver.BooleanParser do
-  @moduledoc """
-  `Enver.BinaryParser` is trying really hard to add value :P
-  """
-
   @type invalid :: Enver.invalid()
   @type opts :: Enver.parse_opts()
   @type val :: Enver.val()

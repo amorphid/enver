@@ -5,10 +5,11 @@
 - add validations to integer parsing
   - greater_than
   - less_than
-- add type guard to atom parser
-- add type guard to binary parser
-- add type guard to boolean parser
-- add type guard to integer parser
+- add type checking to atom parser
+- add type checking to binary parser
+- add type checking to boolean parser
+- add type checking to charlist parser
+- add type checking to integer parser
 
 # v0.1.0 (Sat Aug 25 21:55:43 2018 -0700)
 

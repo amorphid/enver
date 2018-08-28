@@ -3,8 +3,12 @@ defmodule Enver.CharlistParserTest do
 
   @subject Enver.CharlistParser
 
+  def opts(%{} = new_opts \\ %{}) do
+    Map.merge(%{type: :charlist}, new_opts)
+  end
+
   test "parsing returns error for invalid charlist" do
-    opts = %{type: :charlist}
-    assert @subject.parse("", opts) == {:error, "invalid charlist"}
+    opts = opts()
+    assert @subject.parse("potato", opts) == {:ok, 'potato'}
   end
 end

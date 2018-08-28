@@ -46,16 +46,8 @@ defmodule EnverTest do
     }
   end
 
-  test "retrieving a integer w/ undeclared base defaults to base 10" do
-    assert @subject.fetch_env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
-  end
-
   test "retrieving a float" do
     assert @subject.fetch_env("FLOAT_VAR", bof()) == {:ok, 20.0}
-  end
-
-  test "retrieving a charlist" do
-    assert @subject.fetch_env("CHARLIST_VAR", bof()) == {:ok, 'ICH_BIN_EIN_CHARLIST'}
   end
 
   test "retrieving a missing environment variable" do
