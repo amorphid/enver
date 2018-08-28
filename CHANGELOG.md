@@ -2,6 +2,8 @@
 
 # v0.2.0 (Sat Aug 25 21:55:43 2018 -0700)
 
+- add validations to float parsing
+  - greater_than
 - add validations to integer parsing
   - greater_than
   - less_than
