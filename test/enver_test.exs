@@ -46,10 +46,6 @@ defmodule EnverTest do
     }
   end
 
-  test "retrieving a float" do
-    assert @subject.fetch_env("FLOAT_VAR", bof()) == {:ok, 20.0}
-  end
-
   test "retrieving a missing environment variable" do
     key = "MISSING_ENVIRONMENT_VAR"
     actual = @subject.fetch_env(key, bof())

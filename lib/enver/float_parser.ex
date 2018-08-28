@@ -9,7 +9,7 @@ defmodule Enver.FloatParser do
   #######
 
   @spec parse(val(), opts()) :: valid() | invalid()
-  def parse(val, _) when is_binary(val) do
+  def parse(val, %{type: :float}) when is_binary(val) do
     case Float.parse(val) do
       {float, ""} ->
         {:ok, float}
