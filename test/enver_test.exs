@@ -46,22 +46,6 @@ defmodule EnverTest do
     }
   end
 
-  test "retrieving a false boolean" do
-    assert @subject.fetch_env("BOOLEAN_FALSE_VAR", bof()) == {:ok, false}
-  end
-
-  test "retrieving a mixed case boolean" do
-    assert @subject.fetch_env("BOOLEAN_MIXED_CASE_VAR", bof()) == {:ok, false}
-  end
-
-  test "retrieving a true boolean" do
-    assert @subject.fetch_env("BOOLEAN_TRUE_VAR", bof()) == {:ok, true}
-  end
-
-  test "retrieving a upcase boolean" do
-    assert @subject.fetch_env("BOOLEAN_UPCASE_VAR", bof()) == {:ok, true}
-  end
-
   test "retrieving a integer w/ undeclared base defaults to base 10" do
     assert @subject.fetch_env("BASE_UNDECLARED_INTEGER_VAR", bof()) == {:ok, 20}
   end

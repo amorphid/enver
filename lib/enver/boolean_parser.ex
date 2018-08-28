@@ -13,7 +13,7 @@ defmodule Enver.BooleanParser do
   #######
 
   @spec parse(val(), opts()) :: valid() | invalid()
-  def parse(val, _) when is_binary(val) do
+  def parse(val, %{type: :boolean}) when is_binary(val) do
     case String.downcase(val) do
       "false" ->
         {:ok, false}
