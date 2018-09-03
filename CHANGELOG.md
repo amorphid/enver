@@ -4,6 +4,7 @@
 
 - add validations to float parsing
   - at_least
+  - at_most
   - greater_than
 - add validations to integer parsing
   - greater_than

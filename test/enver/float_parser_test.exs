@@ -35,7 +35,7 @@ defmodule Enver.FloatParserTest do
     end
 
     test "less than" do
-      al = 1
+      al = 0
       actual = @subject.validate_at_least(-1.0, %{at_least: al})
       expected = {:error, "float not at least: #{inspect(al)}"}
       assert actual == expected
@@ -43,6 +43,27 @@ defmodule Enver.FloatParserTest do
 
     test "not provided" do
       assert @subject.validate_at_least(1, %{}) == :ok
+    end
+  end
+
+  describe "&validate_at_most/2" do
+    test "less than" do
+      assert @subject.validate_at_most(-1.0, %{at_most: 0}) == :ok
+    end
+
+    test "equal to" do
+      assert @subject.validate_at_most(0.0, %{at_most: 0}) == :ok
+    end
+
+    test "more than" do
+      am = 0
+      actual = @subject.validate_at_most(1.0, %{at_most: am})
+      expected = {:error, "float not at most: #{inspect(am)}"}
+      assert actual == expected
+    end
+
+    test "not provided" do
+      assert @subject.validate_at_most(1, %{}) == :ok
     end
   end
 
