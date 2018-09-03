@@ -43,6 +43,25 @@ defmodule Enver.FloatParser do
   end
 
   @doc false
+  @spec validate_at_least(float(), opts()) :: :ok | invalid() 
+  def validate_at_least(float, %{at_least: al})
+      when is_float(al) or is_integer(al) do
+    if float >= al do
+      :ok
+    else
+      {:error, "float not at least: #{inspect(al)}"}
+    end
+  end
+
+  def validate_at_least(_, %{at_least: al}) do
+    {:error, "invalid at_least: #{inspect(al)}"}
+  end
+
+  def validate_at_least(float, %{} = opts) do
+    validate_at_least(float, Map.put(opts, :at_least, float - 1))
+  end
+
+  @doc false
   @spec validate_greater_than(float(), opts()) :: :ok | invalid()
   def validate_greater_than(float, %{greater_than: gt})
       when is_float(gt) or is_integer(gt) do

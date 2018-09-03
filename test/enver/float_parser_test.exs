@@ -25,6 +25,27 @@ defmodule Enver.FloatParserTest do
   # Undocumented #
   ################
 
+  describe "&validate_at_least/2" do
+    test "more than" do
+      assert @subject.validate_at_least(1.0, %{at_least: 0}) == :ok
+    end
+
+    test "equal to" do
+      assert @subject.validate_at_least(0.0, %{at_least: 0}) == :ok
+    end
+
+    test "less than" do
+      al = 1
+      actual = @subject.validate_at_least(-1.0, %{at_least: al})
+      expected = {:error, "float not at least: #{inspect(al)}"}
+      assert actual == expected
+    end
+
+    test "not provided" do
+      assert @subject.validate_at_least(1, %{}) == :ok
+    end
+  end
+
   describe "&validate_greater_than/2" do
     test "greater than" do
       assert @subject.validate_greater_than(1, %{greater_than: 0}) == :ok
@@ -41,21 +62,4 @@ defmodule Enver.FloatParserTest do
       assert @subject.validate_greater_than(1, %{}) == :ok
     end
   end
-  #
-  # describe "&validate_less_than/2" do
-  #   test "less than" do
-  #     assert @subject.validate_less_than(0, %{less_than: 1}) == :ok
-  #   end
-  #
-  #   test "not less than" do
-  #     lt = 1
-  #     actual = @subject.validate_less_than(1, %{less_than: 1})
-  #     expected = {:error, "integer not less than: #{inspect(lt)}"}
-  #     assert actual == expected
-  #   end
-  #
-  #   test "not provided" do
-  #     assert @subject.validate_less_than(1, %{}) == :ok
-  #   end
-  # end
 end
