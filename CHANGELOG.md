@@ -6,6 +6,7 @@
   - at_least
   - at_most
   - greater_than
+  - less_than
 - add validations to integer parsing
   - greater_than
   - less_than

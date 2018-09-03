@@ -83,4 +83,28 @@ defmodule Enver.FloatParserTest do
       assert @subject.validate_greater_than(1, %{}) == :ok
     end
   end
+
+  describe "&validate_less_than/2" do
+    test "less than" do
+      assert @subject.validate_less_than(0, %{less_than: 1}) == :ok
+    end
+
+    test "equal to" do
+      lt = 0
+      actual = @subject.validate_less_than(0, %{less_than: lt})
+      expected = {:error, "float not less than: #{inspect(lt)}"}
+      assert actual == expected
+    end
+
+    test "greater than" do
+      lt = -1
+      actual = @subject.validate_less_than(0, %{less_than: lt})
+      expected = {:error, "float not less than: #{inspect(lt)}"}
+      assert actual == expected
+    end
+
+    test "not provided" do
+      assert @subject.validate_less_than(0, %{}) == :ok
+    end
+  end
 end

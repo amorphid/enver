@@ -17,7 +17,10 @@ defmodule Enver.FloatParser do
   @spec parse(val(), opts()) :: valid() | invalid()
   def parse(val, %{type: :float} = opts) when is_binary(val) do
     with {:ok, float} = maybe_valid <- parse_float(val),
+         :ok <- validate_at_least(float, opts),
+         :ok <- validate_at_most(float, opts),
          :ok <- validate_greater_than(float, opts),
+         :ok <- validate_less_than(float, opts),
          valid <- maybe_valid do
       valid
     else
@@ -97,5 +100,24 @@ defmodule Enver.FloatParser do
 
   def validate_greater_than(float, %{} = opts) do
     validate_greater_than(float, Map.put(opts, :greater_than, float - 1))
+  end
+
+  @doc false
+  @spec validate_less_than(float(), opts()) :: :ok | invalid()
+  def validate_less_than(float, %{less_than: lt})
+      when is_float(lt) or is_integer(lt) do
+    if float < lt do
+      :ok
+    else
+      {:error, "float not less than: #{inspect(lt)}"}
+    end
+  end
+
+  def validate_less_than(_, %{less_than: lt}) do
+    {:error, "invalid less_than: #{inspect(lt)}"}
+  end
+
+  def validate_less_than(float, %{} = opts) do
+    validate_less_than(float, Map.put(opts, :less_than, float + 1))
   end
 end
