@@ -10,7 +10,7 @@ by adding `enver` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:enver, "~> 0.1.0"}
+    {:enver, "~> 0.2.0"}
   ]
 end
 ```
