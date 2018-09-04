@@ -1,9 +1,4 @@
 defmodule Enver.BinaryParser do
-  @moduledoc """
-  `Enver.BinaryParser` is trying really hard to add value :P
-  """
-
-  @type invalid :: Enver.invalid()
   @type opts :: Enver.parse_opts()
   @type val :: Enver.val()
   @type valid :: {:ok, String.t()}
@@ -12,12 +7,15 @@ defmodule Enver.BinaryParser do
   # API #
   #######
 
-  @spec parse(val(), opts()) :: valid() | invalid()
-  def parse("", _) do
-    {:error, "invalid binary"}
-  end
+  @doc """
+  Converts the given binary to an binary (aka it doesn't do much at all).
 
-  def parse(val, _) when is_binary(val) do
+      iex(1)> Enver.BinaryParser.parse("potato", %{type: :binary})
+      {:ok, "potato"}
+
+  """
+  @spec parse(val(), opts()) :: valid()
+  def parse(val, %{type: :binary}) when is_binary(val) do
     {:ok, val}
   end
 end
