@@ -17,7 +17,7 @@ defmodule Enver.MixProject do
       app: :enver,
       description: description(),
       deps: deps(),
-      elixir: "~> 1.7",
+      elixir: "~> 1.6",
       package: package(),
       start_permanent: Mix.env() == :prod,
       version: "0.2.0"
